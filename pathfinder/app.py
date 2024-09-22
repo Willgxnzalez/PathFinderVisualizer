@@ -1,6 +1,7 @@
 import pyglet as pg
 from .config import *
 from .map_handler import MapHandler
+from .camera import Camera
 import threading
 
 class App(pg.window.Window):
@@ -11,11 +12,16 @@ class App(pg.window.Window):
         self.set_minimum_size(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
         
         self._map_handler = MapHandler()
+        self._camera = Camera(WINDOW_WIDTH, WINDOW_HEIGHT)
+        
         self._map_render_batch = pg.graphics.Batch()
     
     def on_draw(self) -> None:
         self.clear()
         
+    def on_resize(self, width, height) -> None:
+        super().on_resize(width, height)
+        self._camera.resize(width, height)
         
     def update(self, dt: float) -> None:
         if not self._map_handler.is_loading_map():
